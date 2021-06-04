@@ -4,8 +4,6 @@ import sys
 from functools import cache, lru_cache
 import time
 
-# testing
-
 def recursionlimit():
     sys.setrecursionlimit(9999)
 
@@ -16,6 +14,7 @@ def actions(board):
     lst = []
     for index in range(len(board.matrix[0])):
         if board.matrix[0][index] == 0:
+            print(index)
             lst.append(index)
     return lst
 
@@ -23,11 +22,10 @@ def result(board, action):
     """
     Returns the board and player that results from making move (i, j) on the board.
     """
-    if action > board.WIDTH or action <= -1:
-        print("Invalid")
+    if action >= board.WIDTH or action <= -1:
+        print("Invalid Action has been Passed")
         pass
     else:
-        action -= 1
         for i in range(board.HEIGHT - 1, -1, -1):
             if board.matrix[i, action] == 0:
                 board.matrix[i, action] = board.player
@@ -113,15 +111,11 @@ def utility(board):
     else:
         return 0
 
-####### Minimax Algorithm #######
-
 def max_value(board):
     """
     Returns the maximum utility value that a boardstate can provide, along with the action
     """
-    global count
-    count += 1
-    print(count)
+
     # Set the original comparitor value to very low
     v = -999
 
@@ -145,9 +139,7 @@ def min_value(board):
     """
     Returns the minimum utility value that a boardstate can provide, along with the action
     """
-    global count
-    count += 0
-    print(count)
+
     # Set the original comparitor value to very high
     v = 999
 
@@ -173,9 +165,10 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    global count
-    count = 0
-    print(count)
+
+    global movesMade
+    movesMade = board.movesMade()
+
     # If the board is terminal, then return None
     if terminal(board) == True:
         return None

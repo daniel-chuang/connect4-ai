@@ -64,7 +64,17 @@ while not crashed:
                 pygame.draw.circle(display, (0, 0, 255), ((x + 0.5) * board.BLOCKSIZE, (y + 0.5) * board.BLOCKSIZE), board.BLOCKSIZE/2 - 4)
 
     # Checks for win
-    board.terminal()
+    # state: None = nothing, 0 = tie, 1 = p1 win, 2 = p2 win
+    state = board.terminal()
+    if state == 0:
+        print(f"The board is full, so this game is a tie!")
+        pygame.display.quit()
+        sys.exit()
+    elif state in [1, 2]:
+        print("from game1p.py")
+        print(f"Player {state} Wins")
+        pygame.display.quit()
+        sys.exit()
 
     pygame.display.update()
 pygame.display.quit()

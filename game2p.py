@@ -36,6 +36,9 @@ class board():
                         self.player = 1
                     break
 
+    def movesMade(self):
+        return np.count_nonzero(self.matrix[self.matrix != 0])
+
     def terminal(self):
         matrixList = [self.matrix, np.transpose(self.matrix)] # self.matrix for rows, np.transpose(self.matrix) for columns
         #matrixList.append(np.diag(self.matrix, k=0))

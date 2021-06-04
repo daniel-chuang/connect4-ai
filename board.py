@@ -25,6 +25,9 @@ class board():
                         self.player = 1
                     break
 
+    def movesMade(self):
+        return np.count_nonzero(self.matrix[self.matrix != 0])
+
     def terminal(self):
         matrixList = [self.matrix, np.transpose(self.matrix)] # self.matrix for rows, np.transpose(self.matrix) for columns
         #matrixList.append(np.diag(self.matrix, k=0))
@@ -46,9 +49,7 @@ class board():
                     if element == val:
                         count += 1
                         if count >= self.in_a_row and val != 0:
-                            print(f"Player {val} Wins")
-                            pygame.display.quit()
-                            sys.exit()
+                            return val
                     else:
                         val = element
                         count = 1
@@ -71,18 +72,16 @@ class board():
                 if element == val:
                     count += 1
                     if count >= self.in_a_row and val != 0:
-                        print(f"Player {val} Wins")
-                        pygame.display.quit()
-                        sys.exit()
+                        return val
                 else:
                     val = element
                     count = 1
 
         # Check for a tie
         if np.count_nonzero(self.matrix) == self.WIDTH * self.HEIGHT: # checks if the matrix has a full grid
-            print(f"The board is full, so this game is a tie!")
-            pygame.display.quit()
-            sys.exit()
+            return 0
+        
+        return None
         
     def __repr__(self):
         return str(self.matrix)

@@ -7,10 +7,13 @@ import numpy as np
 import pygame
 import sys
 
+# importing my board class
+from board import board
+
 # %% Set up board class
 class board():
 
-    def __init__(self, WIDTH=4, HEIGHT=4, BLOCKSIZE = 20):
+    def __init__(self, WIDTH=7, HEIGHT=6, BLOCKSIZE = 20):
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
         self.BLOCKSIZE = 50
@@ -119,6 +122,7 @@ while not crashed:
         if event.type == pygame.KEYDOWN:
             if event.key in keyDict:
                 board.move(keyDict[event.key])
+                print(board.matrix)
 
     # Draw horizontal gridlines
     for x in range(board.WIDTH + 1):

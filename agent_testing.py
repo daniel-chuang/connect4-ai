@@ -183,3 +183,23 @@ def minimax(board):
         return max_value(board)[1]
     else:
         return min_value(board)[1]
+
+
+
+# %%
+from board import board
+
+board = board()
+board.matrix = np.array(
+[[0, 1, 2, 1, 2, 1, 2,],
+ [0, 2, 1, 2, 2, 2, 1,],
+ [0, 2, 1, 2, 1, 1, 2,],
+ [1, 1, 1, 2, 2, 1, 1,],
+ [1, 2, 2, 1, 2, 1, 2,],
+ [1, 2, 1, 2, 1, 2, 1,]]
+)
+
+if __name__ == "__main__":
+    print(winner(board))
+    print("It ran")
+    print(minimax(board))

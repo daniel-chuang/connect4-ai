@@ -40,8 +40,8 @@ while not crashed:
             if event.type == pygame.KEYDOWN:
                 if event.key in keyDict:
                     board.move(keyDict[event.key])
-        
-        else: #board.player has to be 2 then
+
+        elif board.player == 2: # board.player has to be 2 then
             board.move(agent.minimax(board))
 
     # Draw horizontal gridlines
@@ -73,6 +73,7 @@ while not crashed:
     elif state in [1, 2]:
         print("from game1p.py")
         print(f"Player {state} Wins")
+        print(board)
         pygame.display.quit()
         sys.exit()
 

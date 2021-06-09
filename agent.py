@@ -3,6 +3,7 @@ import functools
 import sys
 from functools import cache, lru_cache
 import time
+import copy
 
 def recursionlimit():
     sys.setrecursionlimit(9999)
@@ -14,7 +15,6 @@ def actions(board):
     lst = []
     for index in range(len(board.matrix[0])):
         if board.matrix[0][index] == 0:
-            print(index)
             lst.append(index)
     return lst
 
@@ -41,11 +41,6 @@ def winner(board):
     #matrixList.append(np.diag(board.matrix, k=0))
     #matrixList.append(np.diag(np.rot90(board.matrix)))
 
-    """
-    print("Diagonal")
-    print(matrixList)
-    """
-
     # Check vertical / horizontal four in a row
     for matrix in matrixList:
         for row in matrix:
@@ -57,7 +52,7 @@ def winner(board):
                 if element == val:
                     count += 1
                     if count >= board.in_a_row and val != 0:
-                        print(f"Player {val} Wins")
+                        # print(f"Player {val} Wins")
                         return(val)
                 else:
                     val = element
@@ -69,7 +64,6 @@ def winner(board):
 
     for matrix in [board.matrix, np.rot90(board.matrix)]:
         for k in range(-matrix.shape[0] + 1, matrix.shape[1]):
-            #print(np.diag(matrix, k=k))
             diagonals.append(np.diag(matrix, k=k))
     
     for row in diagonals:
@@ -81,7 +75,7 @@ def winner(board):
             if element == val:
                 count += 1
                 if count >= board.in_a_row and val != 0:
-                    print(f"Player {val} has four in a row!")
+                    print(f"From agent: Player {val} has four in a row!")
                     return val
             else:
                 val = element
@@ -121,6 +115,8 @@ def max_value(board):
 
     # If the board is terminal, return the utility value
     if terminal(board):
+        print("TERMINAL")
+        print(board)
         return (utility(board), None)
 
     # Gets all possible utility values from min
@@ -145,6 +141,8 @@ def min_value(board):
 
     # If the board is terminal, return the utility value
     if terminal(board):
+        print("TERMINAL")
+        print(board)
         return (utility(board), None)
 
     # Gets all possible utility values from max
@@ -168,6 +166,8 @@ def minimax(board):
 
     global movesMade
     movesMade = board.movesMade()
+
+    board = copy.deepcopy(board)
 
     # If the board is terminal, then return None
     if terminal(board) == True:

@@ -1,7 +1,6 @@
 import numpy as np
 import functools
 import sys
-from functools import cache, lru_cache
 import time
 import copy
 
@@ -53,7 +52,7 @@ def winner(board):
                     count += 1
                     if count >= board.in_a_row and val != 0:
                         # print(f"Player {val} Wins")
-                        return(val)
+                        return val
                 else:
                     val = element
                     count = 1
@@ -75,11 +74,12 @@ def winner(board):
             if element == val:
                 count += 1
                 if count >= board.in_a_row and val != 0:
-                    print(f"From agent: Player {val} has four in a row!")
+                    # print(f"From agent: Player {val} has four in a row!")
                     return val
             else:
                 val = element
                 count = 1
+    return None
 
 def terminal(board):
     """
@@ -105,76 +105,35 @@ def utility(board):
     else:
         return 0
 
-def max_value(board):
-    """
-    Returns the maximum utility value that a boardstate can provide, along with the action
-    """
+"""
+function negamax(node, depth, color) is
+    if depth = 0 or node is a terminal node then
+        return color × the heuristic value of node
+    value := −∞
+    for each child of node do
+        value := max(value, negamax(child, depth − 1, −color))
+    return −value
+"""
 
-    # Set the original comparitor value to very low
-    v = -999
-
-    # If the board is terminal, return the utility value
-    if terminal(board):
-        print("TERMINAL")
-        print(board)
-        return (utility(board), None)
-
-    # Gets all possible utility values from min
-    action_return = list()
-    for action in actions(board):
-        v_new = max(v, min_value(result(board, action))[0])
-        if v_new != v:
-            action_return.append(action)
-        v = v_new
-        if v == 1:
-            break
-
-    return (v, action_return[-1])
-
-def min_value(board):
-    """
-    Returns the minimum utility value that a boardstate can provide, along with the action
-    """
-
-    # Set the original comparitor value to very high
-    v = 999
-
-    # If the board is terminal, return the utility value
-    if terminal(board):
-        print("TERMINAL")
-        print(board)
-        return (utility(board), None)
-
-    # Gets all possible utility values from max
-    action_return = list()
-    for action in actions(board):
-        v_new = min(v, max_value(result(board, action))[0])
-        if v_new != v:
-            action_return.append(action)
-        v = v_new
-        if v == -1:
-            break
-
-    return (v, action_return[-1])
-
-@cache
-@lru_cache(maxsize=128)
-def minimax(board):
-    """
-    Returns the optimal action for the current player on the board.
-    """
-
-    global movesMade
-    movesMade = board.movesMade()
+# negamax 
+def minimax(board, depth=0, player = -1):
 
     board = copy.deepcopy(board)
 
-    # If the board is terminal, then return None
-    if terminal(board) == True:
-        return None
+    if depth == -5:
+        return (None, player * utility(board))
 
-    # Implement Minimax Algorithm
-    if board.player == 1:
-        return max_value(board)[1]
-    else:
-        return min_value(board)[1]
+    if board.movesMade() == board.WIDTH * board.HEIGHT or terminal(board):
+        return (None, player * utility(board))
+    
+    comparitor = -999
+    actions_list = list()
+    for action in actions(board):
+
+        comparitor_new = max(comparitor, minimax(result(board, action), depth - 1, -player)[1])
+        if comparitor_new != comparitor:
+            actions_list.append(action)
+
+        comparitor = comparitor_new
+
+    return (actions_list[-1], -comparitor)

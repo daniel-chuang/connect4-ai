@@ -11,9 +11,12 @@ class board():
         self.in_a_row = 4
 
     def move(self, position):
+        if position == None:
+            return
+
         if position > self.WIDTH or position <= -1:
-            print("Invalid")
-            pass
+            print(f"Invalid position: {position}")
+            return
         else:
             position -= 1
             for i in range(self.HEIGHT - 1, -1, -1):

@@ -1,27 +1,57 @@
+"""
+The class for the Connect4 board.
+"""
+
 import numpy as np
+from random import randint
 
 class board():
 
-    def __init__(self, WIDTH=7, HEIGHT=6, BLOCKSIZE = 20):
+    """
+    The class for the Connect4 board. Takes an input of WIDTH, HEIGHT, and BLOCKSIZE. However, these are all set to default values
+    if not specified.
+
+    Attributes:
+    - board.player
+    - board.in_a_row
+    - board.WIDTH
+    - board.HEIGHT
+    - board.BLOCKSIZE
+    - board.matrix
+
+    Methods:
+    - board.move(position)
+    - board.movesMade()
+    - board.terminal()
+    """
+
+    player = randint(1, 2) # starts with a random player
+    in_a_row = 4                  # uses four in a row to check for win.
+
+    def __init__(self, WIDTH=7, HEIGHT=6, BLOCKSIZE=20):
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
         self.BLOCKSIZE = 50
         self.matrix = np.zeros((HEIGHT, WIDTH))
-        self.player = 1
-        self.in_a_row = 4
 
     def move(self, position):
-        if position == None:
-            return
-
+        """
+        Takes an position between 1 to 7 for which column to put a piece into. Puts the piece at the very lowest possible
+        position in that respective column.
+        """
+        # Checks for if the position is between 1 to 7
         if position > self.WIDTH or position <= -1:
-            print(f"Invalid position: {position}")
-            return
+            print("Invalid")
+            pass
+
+        # If the input is valid, this runs
         else:
-            position -= 1
-            for i in range(self.HEIGHT - 1, -1, -1):
-                if self.matrix[i, position] == 0:
+            position -= 1 # subtract one from the position for list indexing
+            for i in range(self.HEIGHT - 1, -1, -1): # iterates from the very lowest position to the highest position
+                if self.matrix[i, position] == 0: # if the position is open then put the piece there
                     self.matrix[i, position] = self.player
+                    
+                    # Switching to the next player
                     if self.player == 1:
                         self.player = 2
                     else:
@@ -29,17 +59,19 @@ class board():
                     break
 
     def movesMade(self):
+        """
+        Returns the amount of moves that have been made by counting the amount of nonzero pieces in the matrix.
+        """
         return np.count_nonzero(self.matrix[self.matrix != 0])
 
     def terminal(self):
-        matrixList = [self.matrix, np.transpose(self.matrix)] # self.matrix for rows, np.transpose(self.matrix) for columns
-        #matrixList.append(np.diag(self.matrix, k=0))
-        #matrixList.append(np.diag(np.rot90(self.matrix)))
+        """
+        Checks if the board has reached a terminal state (meaning that either the game has reached a tie, or someone has won).
 
+        Returns the player number of the winner, if there is one. Otherwise, if terminal, returns 0. Finally, if a terminal state has
+        not been reached, returns None.
         """
-        print("Diagonal")
-        print(matrixList)
-        """
+        matrixList = [self.matrix, np.transpose(self.matrix)] # self.matrix for rows, np.transpose(self.matrix) for columns
 
         # Check vertical / horizontal four in a row
         for matrix in matrixList:

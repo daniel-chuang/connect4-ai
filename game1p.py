@@ -1,25 +1,27 @@
 """
 Connect 4 Game
+
+2 Players: 1 Human, 1 AI (code in agent.py)
+
+7 by 6 board. Win by connecting four pieces in a row.
 """
 
-# %% imports
+# Imports
 import numpy as np
 import pygame
 import sys
+import time
 
-# importing my board class
+# Importing my board class
 from board import board
 
-# importing the agent
+# Importing the agent
 import agent
-agent.recursionlimit()
-sys.setrecursionlimit(9999)
 
-# %% Board set up
+# Board set up
 board = board()
-print(board)
 
-# %% Pygame Set Up
+# Pygame Set Up
 pygame.init()
 pygame.display.set_caption(f"Connect 4: {board.WIDTH} by {board.HEIGHT} Board")
 display = pygame.display.set_mode((board.WIDTH * board.BLOCKSIZE, board.HEIGHT * board.BLOCKSIZE))
@@ -29,7 +31,7 @@ crashed = False
 # Key dictionary
 keyDict = {pygame.K_1:1, pygame.K_2:2, pygame.K_3:3, pygame.K_4:4, pygame.K_5:5, pygame.K_6:6, pygame.K_7:7}
 
-# %% Pygame Main Loop
+# Pygame Main Loop
 while not crashed:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -41,11 +43,9 @@ while not crashed:
                 if event.key in keyDict:
                     board.move(keyDict[event.key])
 
+        # Prompt for minimax agent to play for player 2
         elif board.player == 2: # board.player has to be 2 then
-            # board.move(agent.minimax(board, player = -1)[0])
-            result = agent.minimax(board, player = -1)
-            print(f"AHAHAHAHAHAHAHAHAHA MADFADSFASDFASDFASDFASDFASD REUTNR {result}")
-            board.move(result[0])
+            board.move(agent.minimax(board)[0])
 
     # Draw horizontal gridlines
     for x in range(board.WIDTH + 1):
@@ -60,26 +60,27 @@ while not crashed:
     # Draw pieces
     for x in range(board.WIDTH):
         for y in range(board.HEIGHT):
-            if board.matrix[y, x] == 1:
+            if board.matrix[y, x] == 1: # drawing for  player 1
                 pygame.draw.circle(display, (255, 0, 0), ((x + 0.5) * board.BLOCKSIZE, (y + 0.5) * board.BLOCKSIZE), board.BLOCKSIZE/2 - 4)
 
-            elif board.matrix[y, x] == 2:
+            elif board.matrix[y, x] == 2: # drawing for player 2
                 pygame.draw.circle(display, (0, 0, 255), ((x + 0.5) * board.BLOCKSIZE, (y + 0.5) * board.BLOCKSIZE), board.BLOCKSIZE/2 - 4)
 
     # Checks for win
     # state: None = nothing, 0 = tie, 1 = p1 win, 2 = p2 win
     state = board.terminal()
-    if state == 0:
+    if state == 0: # In the case of a tie
         print(f"The board is full, so this game is a tie!")
         pygame.display.quit()
         sys.exit()
-    elif state in [1, 2]:
+    elif state in [1, 2]: # In the case of a win
         print("from game1p.py")
         print(f"Player {state} Wins")
         print(board)
+        pygame.display.update()
+        time.sleep(2)
         pygame.display.quit()
         sys.exit()
 
     pygame.display.update()
 pygame.display.quit()
-# %%

@@ -42,7 +42,7 @@ while not crashed:
                     board.move(keyDict[event.key])
 
         elif board.player == 2: # board.player has to be 2 then
-            board.move(agent.minimax(board)[0])
+            board.move(agent.minimax(board, player = -1)[0])
 
     # Draw horizontal gridlines
     for x in range(board.WIDTH + 1):

@@ -116,11 +116,12 @@ function negamax(node, depth, color) is
 """
 
 # negamax 
-def minimax(board, depth=0, player = -1):
+def minimax(board, depth=0, player = -1, actions_path = []):
 
-    board = copy.deepcopy(board)
+    if actions_path == [0,4]:
+        print(board.matrix)
 
-    if depth == -5:
+    if depth == -3:
         return (None, player * utility(board))
 
     if board.movesMade() == board.WIDTH * board.HEIGHT or terminal(board):
@@ -130,10 +131,16 @@ def minimax(board, depth=0, player = -1):
     actions_list = list()
     for action in actions(board):
 
-        comparitor_new = max(comparitor, minimax(result(board, action), depth - 1, -player)[1])
+        tempboard = copy.deepcopy(board)
+        actions_path.append(action)
+        comparitor_new = max(comparitor, minimax(result(tempboard, action), depth - 1, -player, actions_path)[1])
+        actions_path.pop()
         if comparitor_new != comparitor:
             actions_list.append(action)
 
         comparitor = comparitor_new
 
-    return (actions_list[-1], -comparitor)
+    # return the best action, as well as the comparitor value
+    # print(f"List of Potential Actions: {actions_list}, Comparitor Value : {-comparitor}")
+    print(f"Path of Actions: {actions_path}, Comparitor Value : {-comparitor}")
+    return (actions_list[-1] + 1, -comparitor)

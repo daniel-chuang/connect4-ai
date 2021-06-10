@@ -89,15 +89,17 @@ while not crashed:
     if state == 0: # In the case of a tie
         print(f"The board is full, so this game is a tie!")
         pygame.display.set_caption(f"The board is full, so this game is a tie!") 
+        pygame.display.update()
+        time.sleep(3)
         pygame.display.quit()
         sys.exit()
     elif state in [1, 2]: # In the case of a win
         print("from game1p.py")
-        pygame.display.set_caption(f"The board is full, so this game is a tie!") 
+        pygame.display.set_caption(f"Player {state} Wins") 
         print(f"Player {state} Wins")
         print(board)
         pygame.display.update()
-        time.sleep(2)
+        time.sleep(3)
         pygame.display.quit()
         sys.exit()
 

@@ -1,16 +1,20 @@
 """
 Connect 4 Game
+
+This is NOT important to the main project. This is simply a version of the game that allows for two players to play.
+
+As such, the commenting on this game is behind.
 """
 
-# %% imports
+# Imports
 import numpy as np
 import pygame
 import sys
 
-# importing my board class
+# Importing my board class
 from board import board
 
-# %% Set up board class
+# Set up board class
 class board():
 
     def __init__(self, WIDTH=7, HEIGHT=6, BLOCKSIZE = 20):

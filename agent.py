@@ -1,3 +1,11 @@
+"""
+The minimax agent for the Connect4 game.
+
+Imported into the game.
+
+The algorithm is a recursive function, which has a controllable depth. 
+"""
+
 import numpy as np
 import functools
 import sys
@@ -127,7 +135,10 @@ def minimax(board, depth=0, player = -1, actions_path = []):
         ## print(f"Path of Actions: {actions_path}, UTILITY: {utility(board)}")
         ## print(board.matrix)
         ## print(actions_path[-1])
-        return (actions_path[-1], utility(board))
+        try:
+            return (actions_path[-1], utility(board))
+        except IndexError:
+            return (None, utility(board))
 
     # -------------------- TREE SEARCH ---------------------
     # Set up a comparitor which stores the "best" utility values

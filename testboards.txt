@@ -1,3 +1,5 @@
+Some testing boards used to check if functions were working
+
 [[1. 1. 1. 2. 2. 2. 2.]
  [2. 2. 2. 1. 1. 1. 1.]
  [1. 1. 1. 2. 2. 2. 2.]

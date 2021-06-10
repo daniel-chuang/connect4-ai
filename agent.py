@@ -119,7 +119,7 @@ function negamax(node, depth, color) is
 def minimax(board, depth=0, player = -1, actions_path = []):
 
     # Return utility if the search has reached it's depth
-    if depth == -3:
+    if depth == 3:
         return (None, player * utility(board))
 
     # Return utility if the game is over
@@ -130,22 +130,31 @@ def minimax(board, depth=0, player = -1, actions_path = []):
 
     # -------------------- TREE SEARCH ---------------------
     # Set up a comparitor which stores the "best" utility values
-    comparitor = -999
+    if player == -1:
+        comparitor = -999
+    else:
+        comparitor = 999
 
     actions_list = list()
-    for action in actions(board):
+    for action in actions(board): # for every possible action in the frontier
 
         tempboard = copy.deepcopy(board)
         actions_path.append(action)
-        comparitor_new = max(comparitor, minimax(result(tempboard, action), depth - 1, -player, actions_path)[1])
+        
+        if player == -1:
+            comparitor_new = max(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
+        else:
+            comparitor_new = min(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
+
         actions_path.pop()
+
         if comparitor_new != comparitor:
             actions_list.append(action)
 
-        comparitor = comparitor_new
+            comparitor = comparitor_new
 
     # return the best action, as well as the comparitor value
     # print(f"List of Potential Actions: {actions_list}, Comparitor Value : {-comparitor}")
     print(f"Path of Actions: {actions_path}, Comparitor Value : {-comparitor}")
     print(board.matrix)
-    return (actions_list[-1] + 1, -comparitor)
+    return (actions_list[-1] + 1, comparitor)

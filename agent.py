@@ -118,16 +118,20 @@ function negamax(node, depth, color) is
 # negamax 
 def minimax(board, depth=0, player = -1, actions_path = []):
 
-    if actions_path == [0,4]:
-        print(board.matrix)
-
+    # Return utility if the search has reached it's depth
     if depth == -3:
         return (None, player * utility(board))
 
+    # Return utility if the game is over
     if board.movesMade() == board.WIDTH * board.HEIGHT or terminal(board):
+        print(f"Path of Actions: {actions_path}, UTILITY: {utility(board)}")
+        print(board.matrix)
         return (None, player * utility(board))
-    
+
+    # -------------------- TREE SEARCH ---------------------
+    # Set up a comparitor which stores the "best" utility values
     comparitor = -999
+
     actions_list = list()
     for action in actions(board):
 
@@ -143,4 +147,5 @@ def minimax(board, depth=0, player = -1, actions_path = []):
     # return the best action, as well as the comparitor value
     # print(f"List of Potential Actions: {actions_list}, Comparitor Value : {-comparitor}")
     print(f"Path of Actions: {actions_path}, Comparitor Value : {-comparitor}")
+    print(board.matrix)
     return (actions_list[-1] + 1, -comparitor)

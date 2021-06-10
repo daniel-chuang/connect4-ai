@@ -75,3 +75,5 @@ The agent assumes that the opponent will play optimally and select the best move
 The agent now chooses to decend down the node that will yield the highest heuristic value, which in the case of this image, is the node to the right.
 
 With that, we have a functioning agent! Of course, this example was simplified, but that is the essence of how to make a Connect4 AI.
+
+Currently, the agent is decent at the game: it wins whenever it can, and it also prevents any one line forks (3 in a row with two open ends). However, it is still rather bad at preventing more complex forks, because the depth is limited to 5 moves into the future.

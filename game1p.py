@@ -30,7 +30,7 @@ pygame.display.flip()
 crashed = False
 
 # Caption set up
-pygame.display.set_caption(f"Player {board.player} Going First") 
+pygame.display.set_caption(f"Player {board.player} Going First. Agent Thinking...") 
 
 # Font set up
 font = pygame.freetype.Font("OpenSans-Regular.ttf", 25)
@@ -54,13 +54,15 @@ while not crashed:
             if event.type == pygame.KEYDOWN:
                 if event.key in keyDict:
                     board.move(keyDict[event.key])
+                    pygame.display.set_caption("Agent Thinking...") 
+                    break
 
         # Prompt for minimax agent to play for player 2
         elif board.player == 2: # board.player has to be 2 then
             board.move(agent.minimax(board)[0])
 
         # Change the caption
-        pygame.display.set_caption(f"Connect 4: {board.WIDTH} by {board.HEIGHT} Board") 
+        pygame.display.set_caption(f"Your Move") 
 
     # Draw horizontal gridlines
     for x in range(board.WIDTH + 1):

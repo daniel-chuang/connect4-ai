@@ -7,7 +7,6 @@ The algorithm is a recursive function, which has a controllable depth.
 """
 
 import numpy as np
-import functools
 import sys
 import time
 import copy

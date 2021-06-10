@@ -1,8 +1,16 @@
+"""
+The minimax agent for the Connect4 game.
+
+Imported into the game.
+
+The algorithm is a recursive function, which has a controllable depth. 
+"""
+
 import numpy as np
 import functools
 import sys
-from functools import cache, lru_cache
 import time
+import copy
 
 def recursionlimit():
     sys.setrecursionlimit(9999)
@@ -21,11 +29,10 @@ def result(board, action):
     """
     Returns the board and player that results from making move (i, j) on the board.
     """
-    if action > board.WIDTH or action <= -1:
-        print("Invalid")
+    if action >= board.WIDTH or action <= -1:
+        print("Invalid Action has been Passed")
         pass
     else:
-        action -= 1
         for i in range(board.HEIGHT - 1, -1, -1):
             if board.matrix[i, action] == 0:
                 board.matrix[i, action] = board.player
@@ -41,11 +48,6 @@ def winner(board):
     #matrixList.append(np.diag(board.matrix, k=0))
     #matrixList.append(np.diag(np.rot90(board.matrix)))
 
-    """
-    print("Diagonal")
-    print(matrixList)
-    """
-
     # Check vertical / horizontal four in a row
     for matrix in matrixList:
         for row in matrix:
@@ -57,8 +59,8 @@ def winner(board):
                 if element == val:
                     count += 1
                     if count >= board.in_a_row and val != 0:
-                        print(f"Player {val} Wins")
-                        return(val)
+                        # print(f"Player {val} Wins")
+                        return val
                 else:
                     val = element
                     count = 1
@@ -69,7 +71,6 @@ def winner(board):
 
     for matrix in [board.matrix, np.rot90(board.matrix)]:
         for k in range(-matrix.shape[0] + 1, matrix.shape[1]):
-            #print(np.diag(matrix, k=k))
             diagonals.append(np.diag(matrix, k=k))
     
     for row in diagonals:
@@ -81,11 +82,12 @@ def winner(board):
             if element == val:
                 count += 1
                 if count >= board.in_a_row and val != 0:
-                    print(f"Player {val} has four in a row!")
+                    # print(f"From agent: Player {val} has four in a row!")
                     return val
             else:
                 val = element
                 count = 1
+    return None
 
 def terminal(board):
     """
@@ -111,75 +113,59 @@ def utility(board):
     else:
         return 0
 
-####### Minimax Algorithm #######
+"""
+function negamax(node, depth, color) is
+    if depth = 0 or node is a terminal node then
+        return color × the heuristic value of node
+    value := −∞
+    for each child of node do
+        value := max(value, negamax(child, depth − 1, −color))
+    return −value
+"""
 
-def max_value(board):
-    """
-    Returns the maximum utility value that a boardstate can provide, along with the action
-    """
-    global count
-    count += 1
-    print(count)
-    # Set the original comparitor value to very low
-    v = -999
+# negamax 
+def minimax(board, depth=0, player = -1, actions_path = []):
 
-    # If the board is terminal, return the utility value
-    if terminal(board):
-        return (utility(board), None)
+    # Return utility if the search has reached it's depth
+    if depth == 5:
+        return (actions_path[-1], utility(board))
 
-    # Gets all possible utility values from min
-    action_return = list()
-    for action in actions(board):
-        v_new = max(v, min_value(result(board, action))[0])
-        if v_new != v:
-            action_return.append(action)
-        v = v_new
-        if v == 1:
-            break
+    # Return utility if the game is over
+    if board.movesMade() == board.WIDTH * board.HEIGHT or terminal(board):
+        ## print(f"Path of Actions: {actions_path}, UTILITY: {utility(board)}")
+        ## print(board.matrix)
+        ## print(actions_path[-1])
+        try:
+            return (actions_path[-1], utility(board))
+        except IndexError:
+            return (None, utility(board))
 
-    return (v, action_return[-1])
-
-def min_value(board):
-    """
-    Returns the minimum utility value that a boardstate can provide, along with the action
-    """
-    global count
-    count += 0
-    print(count)
-    # Set the original comparitor value to very high
-    v = 999
-
-    # If the board is terminal, return the utility value
-    if terminal(board):
-        return (utility(board), None)
-
-    # Gets all possible utility values from max
-    action_return = list()
-    for action in actions(board):
-        v_new = min(v, max_value(result(board, action))[0])
-        if v_new != v:
-            action_return.append(action)
-        v = v_new
-        if v == -1:
-            break
-
-    return (v, action_return[-1])
-
-@cache
-@lru_cache(maxsize=128)
-def minimax(board):
-    """
-    Returns the optimal action for the current player on the board.
-    """
-    global count
-    count = 0
-    print(count)
-    # If the board is terminal, then return None
-    if terminal(board) == True:
-        return None
-
-    # Implement Minimax Algorithm
-    if board.player == 1:
-        return max_value(board)[1]
+    # -------------------- TREE SEARCH ---------------------
+    # Set up a comparitor which stores the "best" utility values
+    if player == -1:
+        comparitor = 999
     else:
-        return min_value(board)[1]
+        comparitor = -999
+
+    actions_list = list()
+    for action in actions(board): # for every possible action in the frontier
+
+        tempboard = copy.deepcopy(board)
+        actions_path.append(action)
+        
+        if player == -1:
+            comparitor_new = min(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
+        else:
+            comparitor_new = max(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
+
+        actions_path.pop()
+
+        if comparitor_new != comparitor:
+            actions_list.append(action)
+
+            comparitor = comparitor_new
+
+    # return the best action, as well as the comparitor value
+    # print(f"Path of Actions: {actions_path}, Comparitor Value : {-comparitor}")
+    # print(board.matrix)
+    return (actions_list[-1] + 1, comparitor)

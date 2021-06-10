@@ -119,21 +119,22 @@ function negamax(node, depth, color) is
 def minimax(board, depth=0, player = -1, actions_path = []):
 
     # Return utility if the search has reached it's depth
-    if depth == 3:
-        return (None, player * utility(board))
+    if depth == 5:
+        return (actions_path[-1], utility(board))
 
     # Return utility if the game is over
     if board.movesMade() == board.WIDTH * board.HEIGHT or terminal(board):
-        print(f"Path of Actions: {actions_path}, UTILITY: {utility(board)}")
-        print(board.matrix)
-        return (None, player * utility(board))
+        ## print(f"Path of Actions: {actions_path}, UTILITY: {utility(board)}")
+        ## print(board.matrix)
+        ## print(actions_path[-1])
+        return (actions_path[-1], utility(board))
 
     # -------------------- TREE SEARCH ---------------------
     # Set up a comparitor which stores the "best" utility values
     if player == -1:
-        comparitor = -999
-    else:
         comparitor = 999
+    else:
+        comparitor = -999
 
     actions_list = list()
     for action in actions(board): # for every possible action in the frontier
@@ -142,9 +143,9 @@ def minimax(board, depth=0, player = -1, actions_path = []):
         actions_path.append(action)
         
         if player == -1:
-            comparitor_new = max(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
-        else:
             comparitor_new = min(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
+        else:
+            comparitor_new = max(comparitor, minimax(result(tempboard, action), depth + 1, -player, actions_path)[1])
 
         actions_path.pop()
 
@@ -154,7 +155,6 @@ def minimax(board, depth=0, player = -1, actions_path = []):
             comparitor = comparitor_new
 
     # return the best action, as well as the comparitor value
-    # print(f"List of Potential Actions: {actions_list}, Comparitor Value : {-comparitor}")
-    print(f"Path of Actions: {actions_path}, Comparitor Value : {-comparitor}")
-    print(board.matrix)
+    # print(f"Path of Actions: {actions_path}, Comparitor Value : {-comparitor}")
+    # print(board.matrix)
     return (actions_list[-1] + 1, comparitor)
